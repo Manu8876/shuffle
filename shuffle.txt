@@ -1,0 +1,102 @@
+import java.io.*;
+import java.math.*;
+import java.security.*;
+import java.text.*;
+import java.util.*;
+import java.util.concurrent.*;
+import java.util.regex.*;
+
+public class Solution {
+
+    // Complete the reverseShuffleMerge function below.
+    static String reverseShuffleMerge(String s) {
+        int n=s.length();
+        int scount[]=new int[27];
+        int acount[]=new int[27];
+        int soa=0;
+        String p="",p1="";
+        for(int i=0;i<n;i++){
+            scount[(int)s.charAt(i)-96]++;
+        }
+        for(int i=1;i<=26;i++){
+            acount[i]=scount[i]/2;
+        }
+        char lc='~';
+        int l=0;
+        for(int i=n-1;i>=0;i--){
+            char ab=s.charAt(i);
+            int x=(int)ab-96;
+            if(scount[x]==acount[x]&&scount[x]>0){
+                if(l==0){
+                    p+=ab;
+                    scount[x]--;
+                    acount[x]--;
+                }
+                else if(l==1){
+                    int y=(int)lc-96;
+                    if(x>y){
+                        p1+=ab;
+                        p=p1;
+                        lc='~';
+                        scount[y]--;
+                        acount[y]--;
+                        scount[x]--;
+                        acount[x]--;
+                        l--;
+                    }
+                    else{
+                        p+=ab;
+                        p1=p;
+                        scount[x]--;
+                        acount[x]--;
+                        l=0;
+                    }
+                    
+                }
+                
+            }
+            else{
+                for(int j=1;j<=26;j++){
+                    if(acount[j]>0){
+                        if(j==x){
+                            p+=ab;
+                            p1+=ab;
+                            scount[x]--;
+                            acount[x]--;
+                        }
+                        else{
+                            scount[x]--;
+                            if(scount[x]==acount[x]&&l<=0){
+                                l++;
+                                p1=p;
+                                p1+=ab;
+                                lc=ab;
+                                
+                            }
+                        }
+                        break;
+                    }
+                }
+            }
+            //System.out.println(p);
+        }
+        return p;
+    }
+
+    private static final Scanner scanner = new Scanner(System.in);
+
+    public static void main(String[] args) throws IOException {
+        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(System.getenv("OUTPUT_PATH")));
+
+        String s = scanner.nextLine();
+
+        String result = reverseShuffleMerge(s);
+
+        bufferedWriter.write(result);
+        bufferedWriter.newLine();
+
+        bufferedWriter.close();
+
+        scanner.close();
+    }
+}
